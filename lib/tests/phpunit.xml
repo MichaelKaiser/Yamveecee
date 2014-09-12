@@ -1,0 +1,14 @@
+<phpunit bootstrap="./bootstrap.php">
+    <testsuite name="Yamveecee Tests">
+        <directory>./Yamveecee</directory>
+    </testsuite>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../Yamveecee/</directory>
+        </whitelist>
+    </filter>
+    <!--   logging>
+        <log type="coverage-html" target="./log/report/" charset="UTF-8" yui="true" highlight="false" lowUpperBound="35" highLowerBound="70" />
+        <log type="junit" target="./log/logfile.xml" logIncompleteSkipped="false"/>
+    </logging -->
+</phpunit>
