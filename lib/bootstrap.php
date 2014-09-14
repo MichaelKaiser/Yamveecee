@@ -3,19 +3,17 @@ require_once FRAMEWORKPATH . 'Yamveecee' . DIRECTORY_SEPARATOR . 'Classloader.ph
 
 $configFinder = new \Yamveecee\Resources\Finder();
 $configFinder->addPath(APPPATH . 'config');
-// $configFinder->addParser('.array.php', new \Yamveecee\Resources\Parser\PhpArray());
-$configFinder->addParser('.json', new \Yamveecee\Resources\Parser\Json());
-// $configFinder->addParser('.xml', new \Yamveecee\Resources\Parser\Xml());
-// $configFinder->addParser('.yml', new \Yamveecee\Resources\Parser\Yaml());
-
-$configFactory = new \Yamveecee\Config\Factory();
 
 $configLoader = new \Yamveecee\Config\Loader();
 $configLoader->setResourcesFinder($configFinder);
-$configLoader->setConfigFactory($configFactory);
+// $configLoader->addParser('.array.php', new \Yamveecee\Config\Parser\PhpArray());
+$configLoader->addParser('.json', new \Yamveecee\Config\Parser\Json());
+// $configLoader->addParser('.xml', new \Yamveecee\Config\Parser\Xml());
+// $configLoader->addParser('.yml', new \Yamveecee\Config\Parser\Yaml());
 
-$serviceLocator = \Yamveecee\ServiceLocator::getInstance($configLoader->getConfig('serviceLocator'));
-$serviceLocator->addService('configLoader', $configLoader);
+$serviceLocator = \Yamveecee\Service\Locator::getInstance($configLoader->getConfig('serviceLocator'));
+$serviceLocator->addConfigurationLoaderService($configLoader);
 
+$dispatcher = $serviceLocator->getDispatcher();
 $response = $dispatcher->route($serviceLocator->getRequestFactory()->getRequest());
 $response->render();
