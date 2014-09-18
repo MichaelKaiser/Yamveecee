@@ -2,6 +2,8 @@
 
 namespace Yamveecee\Service;
 
+use Yamveecee\Config\ConfigInterface;
+
 /**
  * Class ServiceLocator
  * @package Yamveecee\Service
@@ -9,7 +11,7 @@ namespace Yamveecee\Service;
 class Locator implements \Yamveecee\Service\LocatorInterface
 {
     /**
-     * @var Configuration
+     * @var ConfigInterface
      */
     protected $config = null;
     /**
@@ -23,11 +25,11 @@ class Locator implements \Yamveecee\Service\LocatorInterface
     protected $services = array();
 
     /**
-     * @param Configuration|null $config
+     * @param ConfigInterface|null $config
      * @throws ConfigurationException
      * @return \Yamveecee\Service\LocatorInterface
      */
-    public static function getInstance(Configuration $config = null)
+    public static function getInstance(ConfigInterface $config = null)
     {
         if (self::$instance === null) {
             if ($config === null) {
@@ -50,10 +52,10 @@ class Locator implements \Yamveecee\Service\LocatorInterface
     }
 
     /**
-     * @param Configuration $config
+     * @param ConfigInterface $config
      * @return void
      */
-    public function setServiceConfig(\Yamveecee\Service\Configuration $config)
+    public function setServiceConfig(\Yamveecee\Config\ConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -125,7 +127,7 @@ class Locator implements \Yamveecee\Service\LocatorInterface
     {
         $service = null;
         $config = $this->getConfigLoader()->getConfig($serviceName);
-        $className = $config->getClassName();
+        $className = $config->getProperty('className');
         if (class_exists($className)) {
             $service = new $className();
             if ($service instanceof \Yamveecee\ServiceInterface) {

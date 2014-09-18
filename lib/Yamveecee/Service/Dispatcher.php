@@ -1,6 +1,7 @@
 <?php
 namespace Yamveecee\Service;
 
+use Yamveecee\Config\ConfigInterface;
 use Yamveecee\RequestInterface;
 
 /**
@@ -10,15 +11,15 @@ use Yamveecee\RequestInterface;
 class Dispatcher implements \Yamveecee\ServiceInterface, \Yamveecee\DispatcherInterface
 {
     /**
-     * @var \Yamveecee\Service\Configuration
+     * @var ConfigInterface
      */
     protected $serviceConfig = null;
 
     /**
-     * @param \Yamveecee\Service\Configuration $config
+     * @param ConfigInterface $config
      * @return void
      */
-    public function setServiceConfig(\Yamveecee\Service\Configuration $config)
+    public function setServiceConfig(\Yamveecee\Config\ConfigInterface $config)
     {
         $this->serviceConfig = $config;
     }

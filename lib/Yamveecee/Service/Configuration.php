@@ -47,12 +47,4 @@ class Configuration implements ConfigInterface
         }
         return $return;
     }
-
-    /**
-     * @return string
-     */
-    public function getClassName()
-    {
-        return $this->getProperty('className');
-    }
 }

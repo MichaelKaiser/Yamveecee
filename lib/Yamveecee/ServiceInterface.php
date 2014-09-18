@@ -8,8 +8,8 @@ namespace Yamveecee;
 interface ServiceInterface
 {
     /**
-     * @param \Yamveecee\Service\Configuration $config
+     * @param Config\ConfigInterface $config
      * @return void
      */
-    public function setServiceConfig(\Yamveecee\Service\Configuration $config);
+    public function setServiceConfig(\Yamveecee\Config\ConfigInterface $config);
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Yamveecee\Config;
 
+use Yamveecee\Service\Enum;
+
 /**
  * Class Loader
  * @package Yamveecee\Config
@@ -13,7 +15,7 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
     protected $configFinder = null;
 
     /**
-     * @var \Yamveecee\Service\Configuration
+     * @var ConfigInterface
      */
     protected $serviceConfig = null;
 
@@ -28,6 +30,11 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
     protected $cache = array();
 
     /**
+     * @var \Yamveecee\Config\FactoryInterface
+     */
+    protected $configFactory = null;
+
+    /**
      * @param \Yamveecee\Resources\Finder $configFinder
      */
     public function setResourcesFinder(\Yamveecee\Resources\Finder $configFinder)
@@ -37,7 +44,7 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
 
     /**
      * @param $name
-     * @return \Yamveecee\Service\Configuration
+     * @return ConfigInterface
      */
     public function getConfig($name)
     {
@@ -46,20 +53,30 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
             $config = $this->cache[$name];
         } else {
             $fileToLoadDto = $this->configFinder->find($name, $this->getSupportedExtensions());
-            $config = new \Yamveecee\Service\Configuration(
-                $this->extensionParserMap[$fileToLoadDto->getExtension()]->parse($fileToLoadDto->getFullFileName())
-            );
+            $config = $this->createConfigInstance($fileToLoadDto);
         }
         return $config;
     }
 
     /**
-     * @param \Yamveecee\Service\Configuration $config
+     * @param ConfigInterface $config
      * @return void
      */
-    public function setServiceConfig(\Yamveecee\Service\Configuration $config)
+    public function setServiceConfig(\Yamveecee\Config\ConfigInterface $config)
     {
         $this->serviceConfig = $config;
+    }
+
+    /**
+     * self injecting Service for anything has to be the hen or egg
+     * @return void
+     */
+    public function init()
+    {
+        $config = $this->getConfig(Enum::CONFIGLOADER);
+        if (null !== $config) {
+            $this->setServiceConfig($config);
+        }
     }
 
     /**
@@ -77,5 +94,43 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
     private function getSupportedExtensions()
     {
         return array_keys($this->extensionParserMap);
+    }
+
+    /**
+     * @param \Yamveecee\Resources\Dto $fileToLoadDto
+     * @return ConfigInterface
+     */
+    private function createConfigInstance(\Yamveecee\Resources\Dto $fileToLoadDto)
+    {
+        $configFactory = $this->getConfigFactory();
+        $config = $configFactory->makeInstance(
+            $this->extensionParserMap[$fileToLoadDto->getExtension()]->parse($fileToLoadDto->getFullFileName())
+        );
+        return $config;
+    }
+
+    /**
+     * @return FactoryInterface
+     */
+    private function getConfigFactory()
+    {
+        if (null === $this->configFactory) {
+            $factoryClassName = $this->getConfigFactoryClassName();
+            $this->configFactory = new $factoryClassName();
+        }
+        return $this->configFactory;
+    }
+
+    /**
+     * @return string
+     */
+    private function getConfigFactoryClassName()
+    {
+        $className = '\Yamveecee\Config\Factory\Std';
+        $configClassName = $this->serviceConfig->getProperty('configFactory\className');
+        if (null !== $configClassName) {
+            $className = $configClassName;
+        }
+        return $className;
     }
 }

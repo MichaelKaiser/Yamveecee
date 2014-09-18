@@ -9,7 +9,7 @@ interface LoaderInterface
 {
     /**
      * @param $name
-     * @return \Yamveecee\Service\Configuration
+     * @return ConfigInterface
      */
     public function getConfig($name);
 }

@@ -18,6 +18,7 @@ $configLoader->setResourcesFinder($configFinder);
 $configLoader->addParser('.json', new \Yamveecee\Config\Parser\Json());
 // $configLoader->addParser('.xml', new \Yamveecee\Config\Parser\Xml());
 // $configLoader->addParser('.yml', new \Yamveecee\Config\Parser\Yaml());
+$configLoader->init();
 
 $serviceLocator = \Yamveecee\Service\Locator::getInstance($configLoader->getConfig('serviceLocator'));
 $serviceLocator->addConfigurationLoaderService($configLoader);
