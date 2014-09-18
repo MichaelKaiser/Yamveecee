@@ -2,11 +2,13 @@
 
 namespace Yamveecee\Service;
 
+use Yamveecee\Config\ConfigInterface;
+
 /**
  * Class Configuration
  * @package Yamveecee\Service
  */
-class Configuration
+class Configuration implements ConfigInterface
 {
     /**
      * @var \stdClass
@@ -23,13 +25,25 @@ class Configuration
 
     /**
      * @param $name
+     * @param \stdClass|null $subEntity
      * @return null|mixed
      */
-    public function getProperty($name)
+    public function getProperty($name, \stdClass $subEntity = null)
     {
         $return = null;
-        if (property_exists($name, $this->config)) {
-            $return = $this->config->$name;
+        if (null === $subEntity) {
+            $subEntity = $this->config;
+        }
+        if (strpos($name, '\\') !== false) {
+            list($currentPropertyName, $remainingPath) = explode('\\', $name, 2);
+            if (property_exists($subEntity, $currentPropertyName)) {
+                $property = $subEntity->$currentPropertyName;
+                if ($property instanceof \stdClass) {
+                    $return = $this->getProperty($remainingPath, $property);
+                }
+            }
+        } elseif (property_exists($name, $subEntity)) {
+            $return = $subEntity->$name;
         }
         return $return;
     }
