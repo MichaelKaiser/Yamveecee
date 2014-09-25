@@ -13,6 +13,11 @@ class Finder
     protected $pathes = null;
 
     /**
+     * @var \Yamveecee\FileFactory
+     */
+    protected $fileFactory = null;
+
+    /**
      *
      */
     public function __construct()
@@ -22,12 +27,14 @@ class Finder
 
     /**
      * @param string $path
+     * @return bool
      * @throws \Yamveecee\Resources\IllegalPathException
      */
     public function addPath($path)
     {
         $path = $this->validatePath($path);
         $this->pathes->append($path);
+        return true;
     }
 
     /**
@@ -63,12 +70,32 @@ class Finder
                     $name,
                     $extension
                 );
-                if (file_exists($lookupFileDto->getFullFileName())) {
+                $file = $this->getFileFactory()->makeInstance($lookupFileDto);
+                if ($file->exists()) {
                     return $lookupFileDto;
                 }
             }
         }
         $exp = new \Yamveecee\Resources\NotFoundException('resource ' . $name . ' not found');
         throw $exp;
+    }
+
+    /**
+     * @return \Yamveecee\FileFactory
+     */
+    protected function getFileFactory()
+    {
+        if ($this->fileFactory === null) {
+            $this->fileFactory = new \Yamveecee\FileFactory();
+        }
+        return $this->fileFactory;
+    }
+
+    /**
+     * @param \Yamveecee\FileFactory $factory
+     */
+    public function setFileFactory(\Yamveecee\FileFactory $factory)
+    {
+        $this->fileFactory = $factory;
     }
 }

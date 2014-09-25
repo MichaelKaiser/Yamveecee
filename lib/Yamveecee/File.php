@@ -35,4 +35,12 @@ class File
     {
         return $this->dto->getFullFileName();
     }
+
+    /**
+     * @return bool
+     */
+    public function exists()
+    {
+        return file_exists($this->dto->getFullFileName());
+    }
 }
