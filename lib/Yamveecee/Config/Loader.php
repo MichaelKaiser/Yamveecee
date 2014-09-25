@@ -52,7 +52,7 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
         if (array_key_exists($name, $this->cache)) {
             $config = $this->cache[$name];
         } else {
-            $fileToLoadDto = $this->configFinder->find($name, $this->getSupportedExtensions());
+            $fileToLoadDto = $this->getConfigFinder()->find($name, $this->getSupportedExtensions());
             $config = $this->createConfigInstance($fileToLoadDto);
         }
         return $config;
@@ -104,7 +104,7 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
     {
         $configFactory = $this->getConfigFactory();
         $config = $configFactory->makeInstance(
-            $this->extensionParserMap[$fileToLoadDto->getExtension()]->parse(
+            $this->getParser($fileToLoadDto)->parse(
                 new \Yamveecee\File($fileToLoadDto)
             )
         );
@@ -124,6 +124,14 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
     }
 
     /**
+     * @param FactoryInterface $factory
+     */
+    public function setConfigFactory(\Yamveecee\Config\FactoryInterface $factory)
+    {
+        $this->configFactory = $factory;
+    }
+
+    /**
      * @return string
      */
     private function getConfigFactoryClassName()
@@ -134,5 +142,35 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
             $className = $configClassName;
         }
         return $className;
+    }
+
+    /**
+     * @return \Yamveecee\Resources\Finder
+     * @throws \Yamveecee\MissingDependencyException
+     */
+    private function getConfigFinder()
+    {
+        if ($this->configFinder === null) {
+            $exc = new \Yamveecee\MissingDependencyException('dependency is missing');
+            $exc->setWhatIsMissingName('\Yamveecee\Resources\Finder');
+            $exc->setWhoIsMissingName(get_class($this));
+            throw $exc;
+        }
+        return $this->configFinder;
+    }
+
+    /**
+     * @param \Yamveecee\Resources\Dto $fileToLoadDto
+     * @throws Parser\Exception
+     * @return ParserInterface
+     */
+    private function getParser(\Yamveecee\Resources\Dto $fileToLoadDto)
+    {
+        $extension = $fileToLoadDto->getExtension();
+        if (!array_key_exists($extension, $this->extensionParserMap)) {
+            $exc = new \Yamveecee\Config\Parser\Exception('no parser for extension defined');
+            throw $exc;
+        }
+        return $this->extensionParserMap[$extension];
     }
 }
