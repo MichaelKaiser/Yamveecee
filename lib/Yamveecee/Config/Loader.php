@@ -104,7 +104,9 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
     {
         $configFactory = $this->getConfigFactory();
         $config = $configFactory->makeInstance(
-            $this->extensionParserMap[$fileToLoadDto->getExtension()]->parse($fileToLoadDto->getFullFileName())
+            $this->extensionParserMap[$fileToLoadDto->getExtension()]->parse(
+                new \Yamveecee\File($fileToLoadDto)
+            )
         );
         return $config;
     }

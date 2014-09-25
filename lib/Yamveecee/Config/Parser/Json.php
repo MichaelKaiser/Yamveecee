@@ -9,34 +9,25 @@ class Json implements \Yamveecee\Config\ParserInterface
 {
 
     /**
-     * @param $fileName
-     * @throws \Yamveecee\Resources\EmptyContentException
-     * @throws Exception
+     * @param \Yamveecee\File $file
      * @return \stdClass
+     * @throws Exception
+     * @throws \Yamveecee\Resources\EmptyContentException
      */
-    public function parse($fileName)
+    public function parse(\Yamveecee\File $file)
     {
-        $content = $this->getContent($fileName);
+        $content = $file->getContent();
         if ($content === null) {
             $exc = new \Yamveecee\Resources\EmptyContentException();
-            $exc->setResourceName($fileName);
+            $exc->setResourceName($file->getFilename());
             throw $exc;
         }
         $object = @json_decode($content);
         if (!is_object($object)) {
             $exc = new \Yamveecee\Config\Parser\Exception('content is no valid json');
-            $exc->setResourceName($fileName);
+            $exc->setResourceName($file->getFilename());
             throw $exc;
         }
         return $object;
-    }
-
-    /**
-     * @param $fileName
-     * @return string
-     */
-    private function getContent($fileName)
-    {
-        return file_get_contents($fileName);
     }
 }

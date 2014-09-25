@@ -8,8 +8,8 @@ namespace Yamveecee\Config;
 interface ParserInterface
 {
     /**
-     * @param $fileName
+     * @param \Yamveecee\File $file
      * @return \stdClass
      */
-    public function parse($fileName);
+    public function parse(\Yamveecee\File $file);
 }
