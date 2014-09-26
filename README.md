@@ -10,7 +10,6 @@ Any suggestions and/or constructive critics are welcome.
 
 ToDo-List:
 ----------
-- create unit tests for current stage of construct in order to detect strange dependencies
 - implement a request factory generating a http request object
 - implement an abstract controller
 - implement a http response with setting headers and echo to render
