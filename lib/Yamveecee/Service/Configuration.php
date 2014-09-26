@@ -25,24 +25,30 @@ class Configuration implements ConfigInterface
 
     /**
      * @param $name
-     * @param \stdClass|null $subEntity
+     * @return mixed|null
+     */
+    public function getProperty($name)
+    {
+        return $this->getPropertyInPath($name, $this->config);
+    }
+
+    /**
+     * @param $name
+     * @param \stdClass $subEntity
      * @return null|mixed
      */
-    public function getProperty($name, \stdClass $subEntity = null)
+    protected function getPropertyInPath($name, \stdClass $subEntity)
     {
         $return = null;
-        if (null === $subEntity) {
-            $subEntity = $this->config;
-        }
         if (strpos($name, '\\') !== false) {
             list($currentPropertyName, $remainingPath) = explode('\\', $name, 2);
             if (property_exists($subEntity, $currentPropertyName)) {
                 $property = $subEntity->$currentPropertyName;
                 if ($property instanceof \stdClass) {
-                    $return = $this->getProperty($remainingPath, $property);
+                    $return = $this->getPropertyInPath($remainingPath, $property);
                 }
             }
-        } elseif (property_exists($name, $subEntity)) {
+        } elseif (property_exists($subEntity, $name)) {
             $return = $subEntity->$name;
         }
         return $return;
