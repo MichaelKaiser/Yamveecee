@@ -39,13 +39,15 @@ class ClassFinder implements \Yamveecee\ServiceInterface
 
     /**
      * @param $path
+     * @return bool
      * @throws ConfigurationException
+     * @throws \Yamveecee\Resources\IllegalPathException
      */
     public function addPath($path)
     {
         if (null === $this->finder) {
             throw new \Yamveecee\Service\ConfigurationException('no resource finder set in classfinder service');
         }
-        $this->finder->addPath($path);
+        return $this->finder->addPath($path);
     }
 }
