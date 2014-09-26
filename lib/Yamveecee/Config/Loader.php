@@ -43,8 +43,9 @@ class Loader implements \Yamveecee\ServiceInterface, LoaderInterface
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return ConfigInterface
+     * @throws \Yamveecee\Resources\NotFoundException
      */
     public function getConfig($name)
     {

@@ -81,6 +81,7 @@ class Locator implements \Yamveecee\Service\LocatorInterface
     /**
      * @param string $serviceName
      * @return \Yamveecee\ServiceInterface
+     * @throws \Yamveecee\Resources\NotFoundException
      */
     public function getService($serviceName)
     {
@@ -103,10 +104,15 @@ class Locator implements \Yamveecee\Service\LocatorInterface
     }
 
     /**
+     * @throws ConfigurationException
      * @return \Yamveecee\Config\LoaderInterface
      */
     public function getConfigLoader()
     {
+        if (!array_key_exists(Enum::CONFIGLOADER, $this->services)) {
+            $exc = new \Yamveecee\Service\ConfigurationException('no config loader set in service locator');
+            throw $exc;
+        }
         return $this->getService(Enum::CONFIGLOADER);
     }
 
@@ -122,6 +128,7 @@ class Locator implements \Yamveecee\Service\LocatorInterface
      * @param string $serviceName
      * @throws ConfigurationException
      * @return \Yamveecee\ServiceInterface
+     * @throws \Yamveecee\Resources\NotFoundException
      */
     private function getServiceInstance($serviceName)
     {

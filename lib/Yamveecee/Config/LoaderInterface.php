@@ -5,7 +5,7 @@ namespace Yamveecee\Config;
  * Class Loader
  * @package Yamveecee\Config
  */
-interface LoaderInterface
+interface LoaderInterface extends \Yamveecee\ServiceInterface
 {
     /**
      * @param $name
