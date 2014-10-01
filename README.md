@@ -13,7 +13,6 @@ ToDo-List:
 - implement a request factory generating a http request object
 - implement an abstract controller
 - implement a http response with setting headers and echo to render
-- implement route method on dispatcher
 - create a hello world example
 - add module handling to bootstrap
 - add a session module
@@ -24,6 +23,7 @@ ToDo-List:
 - add validator module
 - add cache support
 - add hook support
+- add logging module
 
 tbd...
 
