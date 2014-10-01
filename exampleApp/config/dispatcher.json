@@ -1,0 +1,14 @@
+{
+    "className": "\\Yamveecee\\Service\\Dispatcher",
+    "controllerNamespace": "\\ExampleApp\\Controller\\Page\\",
+    "controllerFactoryClassName": "\\Yamveecee\\Controller\\Factory",
+    "routes": {
+        "namedController": {
+            "pattern": "/<P:controller>[a-zA-Z]+(/<P:action>[a-zA-Z_]+)?",
+            "requestValue": "path"
+        },
+        "default": {
+            "controllerName": "DefaultPage"
+        }
+    }
+}
